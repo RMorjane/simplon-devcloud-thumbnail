@@ -1,3 +1,5 @@
+const Jimp = require('jimp');
+
 module.exports = async function (context, myBlob) {
 
     context.log("Uploaded image detected");
