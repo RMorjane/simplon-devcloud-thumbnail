@@ -7,12 +7,16 @@ module.exports = async function (context, myBlob) {
     const path_file = uri.substring(0, uri.lastIndexOf("/"));
 
     const image = await Jimp.read(myBlob).then((image) => {
+
         const thumbnail = image
             .clone()
             .rezise(200, Jimp.AUTO)
             .quality(50)
             .write(`${path_file}/${name_thumb}`);
+
+        context.bindingData.outputBlob = thumbnail;
         context.log("image resized");
+
     }).catch(err => {
         context.log(err);
     })
