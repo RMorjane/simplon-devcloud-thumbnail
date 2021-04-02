@@ -1,0 +1,9 @@
+{
+  "name": "resize_image",
+  "version": "1.0",
+  "description": "resize an uploaded image",
+  "scripts" : {
+    "test": "echo \"No tests yet...\""
+  },
+  "author": "Morjane"
+}
