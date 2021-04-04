@@ -5,22 +5,31 @@ module.exports = async function (context, myBlob) {
     context.log("Uploaded image detected");
     context.log("JavaScript blob trigger function processed blob \n Blob:", context.bindingData.blobTrigger, "\n Blob Size:", myBlob.length, "Bytes");
 
-    const name_thumb = `${name_s}_thumb.${name_ext}`;
-    const path_file = uri.substring(0, uri.lastIndexOf("/"));
+    const image = await Jimp.read(myBlob).then((image)=>{
 
-    const image = await Jimp.read(myBlob).then((image) => {
+        // const storageUrl = "https://morjanestore.blob.core.windows.net";
+        const blobUrl = context.bindingData.blobTrigger;
+        const blobPath = blobUrl.slice(0,blobUrl.lastIndexOf("/"));
+        const blobName = blobUrl.slice(blobUrl.lastIndexOf("/")+1,blobUrl.lastIndexOf("."));
+        const blobExtension = blobUrl.slice(blobUrl.lastIndexOf("."));
 
-        const thumbnail = image
-            .clone()
-            .rezise(200, Jimp.AUTO)
-            .quality(50)
-            .write(`${path_file}/${name_thumb}`);
+        console.log("file url : " + blobUrl);
+        console.log(" file path : " + blobPath);
+        console.log("file name : " + blobName);
+        console.log("file extension : " + blobExtension);
+        console.log("image : " + image);
 
-        context.bindingData.outputBlob = thumbnail;
-        context.log("image resized");
+        image.getBuffer(Jimp.AUTO,function(){
+            console.log("Node.JS Blob Trigger function resized "+context.bindingData.blobTrigger + " to " + image.bitmap.width + "x" + image.bitmap.height);
+            const thumbnail = image.clone();
+            thumbnail.write(`${blobPath}/${blobName}_thumb${blobExtension}`);
+            thumbnail.scale(0.5);
+            context.bindingData.outputBlob = thumbnail;
+            context.done();
+        });
 
-    }).catch(err => {
-        context.log(err);
+    }).catch(err =>{
+        console.log(err);
     })
 
 };
