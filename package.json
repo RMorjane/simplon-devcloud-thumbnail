@@ -2,8 +2,11 @@
   "name": "resize_image",
   "version": "1.0",
   "description": "resize an uploaded image",
-  "scripts" : {
+  "scripts": {
     "test": "echo \"No tests yet...\""
   },
-  "author": "Morjane"
+  "author": "Morjane",
+  "dependencies": {
+    "jimp": "^0.16.1"
+  }
 }
