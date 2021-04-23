@@ -7,6 +7,9 @@
   },
   "author": "Morjane",
   "dependencies": {
-    "jimp": "^0.16.1"
+    "dotenv": "^8.2.0",
+    "fs": "*",
+    "jimp": "^0.16.1",
+    "pkgcloud": "^2.2.0"
   }
 }
