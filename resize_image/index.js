@@ -3,6 +3,8 @@ var fs = require("fs");
 var pkgcloud = require('pkgcloud');
 require('dotenv').config();
 
+var uploaded = false
+
 module.exports = async function (context, myBlob) {
 
     context.log("Uploaded image detected");
@@ -16,7 +18,7 @@ module.exports = async function (context, myBlob) {
         const blobExtension = blobUrl.slice(blobUrl.lastIndexOf("."));
 
         console.log("file url : " + blobUrl);
-        console.log(" file path : " + blobPath);
+        console.log("file path : " + blobPath);
         console.log("file name : " + blobName);
         console.log("file extension : " + blobExtension);
         console.log("image : " + image);
@@ -24,12 +26,14 @@ module.exports = async function (context, myBlob) {
         image.getBuffer(Jimp.AUTO,function(){
             console.log("Node.JS Blob Trigger function resized "+context.bindingData.blobTrigger + " to " + image.bitmap.width + "x" + image.bitmap.height);
             const thumbnail = image.clone();
-            const filename = `${blobName}_thumb${blobExtension}`;
-            console.log("thumbnail : ",filename);
-            thumbnail.write(`${blobPath}/${blobName}_thumb${blobExtension}`);
+            const file = `${blobName}${blobExtension}`;
+            const thumbnail_file = `${blobName}_thumb${blobExtension}`;
             thumbnail.scale(0.5);
-            uploadBlobStorage(thumbnail,process.env.AZURE_STORAGE_CONTAINER_NAME);
-            context.bindingData.outputBlob = thumbnail;
+            thumbnail.write(thumbnail_file);
+            if(! uploaded){
+                uploadBlobStorage(thumbnail_file,process.env.AZURE_STORAGE_CONTAINER_NAME);
+                uploaded = !uploaded;
+            }
             context.done();
         });
 
